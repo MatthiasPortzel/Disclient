@@ -17,7 +17,7 @@ String.prototype.pad = function (length) {
 
 var displayMessage = function (message) {
    if (server && message.guild.id === server.id) {
-      var displayName = (message.member.nickname || message.author.username);
+      var displayName = (message.member && message.member.nickname) ? message.member.nickname : message.author.username;
       var content = message.content;
       content = content.replace(/<@&(\d{18})>/g, (m, id) => ("@" + message.mentions.roles.get(id).name).magenta);
       content = content.replace (/<#(\d{18})>/g, (m, id) => ("#" + message.mentions.channels.get(id).name).cyan);
