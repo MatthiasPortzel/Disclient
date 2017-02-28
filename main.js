@@ -108,7 +108,6 @@ var say = function (txt) {
          var num = parseInt(args[1] || " ", 10);
          if (num && num > 0) {
             var chan = getChannel(args[2]);
-            console.log(typeof chan);
             if (chan instanceof Discord.Channel) {
                chan.fetchMessages({limit: num}).then(messages => {
                   messages.forEach(displayMessage);
