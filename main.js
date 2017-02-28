@@ -80,7 +80,7 @@ var say = function (txt) {
             console.log("Sending message in " + ("#" + channelName).cyan);
          }
       }
-      if (txt.toLowerCase().startsWith("/leave") || text.startsWith("/l")) {
+      if (txt.toLowerCase().startsWith("/leave") || txt.startsWith("/l")) {
          console.log("You've left " + server.name);
          server = null;
          member = null;
