@@ -10,6 +10,7 @@ const rl = readline.createInterface({
 
 var server;
 var lastChannel;
+var member;
 
 String.prototype.pad = function (length) {
    return (this.toString()+Array(length).join(" ")).slice(0, length);
@@ -28,11 +29,41 @@ var displayMessage = function (message) {
    }
 };
 
+var getChannel = function (channelName, perm) {
+   if (perm && perm.toLowerCase() === "send")  {
+      perm = "SEND_MESSAGES";
+   }else {
+      perm = "READ_MESSAGES";
+   }
+   channelName = channelName.toLowerCase();
+   if (!channelName){
+      if (lastChannel) {
+         return lastChannel;
+      }else {
+         return server.defaultChannel;
+      }
+   }
+   var channels = server.channels.array();
+   var matches = [];
+   for (var i = 0; i < channels.length; i++) {
+      if (channels[i].permissionsFor(member).hasPermission(perm) && channels[i].name.search(new RegExp(channelName))) {
+         matches.push(channels[i]);
+      }
+   }
+   if (matches.length === 0) {
+      return null;
+   }else if (matches.length === 1) {
+      return matches[0];
+   }else {
+      return matches;
+   }
+};
+
 var say = function (txt) {
    if (!server)
       return;
 
-   var channel = lastChannel;
+   var channel = getChannel();
 
    var sendMessage = true;
 
@@ -41,8 +72,8 @@ var say = function (txt) {
          channelName = txt.replace(/\/#(\S+).*/, "$1");
          txt = txt.replace(/\/#\S+\s(.*)/, "$1");
 
-         channel = server.channels.find("name", channelName.toLowerCase());
-         if (!channel || !channel.permissionsFor(server.members.get(Client.user.id)).hasPermission('SEND_MESSAGES')) {
+         channel = getChannel(channelName, "send");
+         if (!channel) {
             console.log("Invalid chennel");
             sendMessage = false;
          }else {
@@ -52,6 +83,7 @@ var say = function (txt) {
       if (txt.startsWith("/leave")) {
          console.log("You've left " + server.name);
          server = null;
+         member = null;
          lastChannel = null;
          chooseServer();
          return;
@@ -63,18 +95,32 @@ var say = function (txt) {
          return;
       }
       if (txt.startsWith("/channels")) {
-         var channels = server.channels.array();
+         var channels = getChannel(".*");
 
          for (var i = 0; i < channels.length; i++) {
-            if (channels[i].permissionsFor(server.members.get(Client.user.id)).hasPermission('READ_MESSAGES')) {
-               console.log(("#" + channels[i].name).cyan);
-            }
+            console.log(("#" + channels[i].name).cyan);
          }
          sendMessage = false;
       }
-   }
-   if (!channel) {
-      channel = server.defaultChannel;
+      ///getMessages <number> [channel]
+      if (txt.startsWith("/getMessages")) {
+         var args = txt.split(" ");
+         var num = parseInt(args[1] || " ", 10);
+         if (num && num > 0) {
+            var chan = getChannel(args[2]);
+            console.log(typeof chan);
+            if (typeof chan !== "object") {
+               console.log("Error, not a valid channel name.");
+            }else {
+               chan.fetchMessages({limit: num}).then(messages => {
+                  messages.forEach(displayMessage);
+               });
+            }
+         }else {
+            console.log("Invalid number.");
+         }
+         return;
+      }
    }
    if (sendMessage) {
       channel.sendMessage(txt);
@@ -99,6 +145,7 @@ var chooseServer = function () {
         return;
       }
       server = guilds[serverNum];
+      member = server.members.get(Client.user.id);
 
       rl.question('', say);
 
