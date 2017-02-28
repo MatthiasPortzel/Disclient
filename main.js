@@ -45,7 +45,7 @@ var getChannel = function (channelName, perm) {
    var channels = server.channels.array();
    var matches = [];
    for (var i = 0; i < channels.length; i++) {
-      if (channels[i].permissionsFor(member).hasPermission(perm) && channels[i].name.search(new RegExp(channelName))) {
+      if (channels[i].permissionsFor(member).hasPermission(perm) && channels[i].type !== "voice" && channels[i].name.search(new RegExp(channelName))) {
          matches.push(channels[i]);
       }
    }
@@ -108,12 +108,12 @@ var say = function (txt) {
          if (num && num > 0) {
             var chan = getChannel(args[2]);
             console.log(typeof chan);
-            if (typeof chan !== "object") {
-               console.log("Error, not a valid channel name.");
-            }else {
+            if (chan instanceof Discord.Channel) {
                chan.fetchMessages({limit: num}).then(messages => {
                   messages.forEach(displayMessage);
                });
+            }else {
+               console.log("Error, not a valid channel name.");
             }
          }else {
             console.log("Invalid number.");
