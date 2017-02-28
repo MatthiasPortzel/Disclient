@@ -18,13 +18,12 @@ String.prototype.pad = function (length) {
 
 var displayMessage = function (message) {
    if (server && message.guild.id === server.id) {
-      var displayName = (message.member && message.member.nickname) ? message.member.nickname : message.author.username;
       var content = message.content;
       content = content.replace(/<@&(\d{18})>/g, (m, id) => ("@" + message.mentions.roles.get(id).name).magenta);
       content = content.replace (/<#(\d{18})>/g, (m, id) => ("#" + message.mentions.channels.get(id).name).cyan);
       content = content.replace(/<@!?(\d{18})>/g, (m, id) => ("@" + message.mentions.users.get(id).username).green);
       content = content.replace(/([^\\]|^)\*\*(\S+?)([^\\])\*\*/g, (m, m1, m2, m3) => m1 + (m2 + m3).bold);
-      console.log(displayName.pad(15).green + (" (# " + message.channel.name.pad(13) + "): ").cyan + content);
+      console.log(message.author.username.pad(15).green + (" (# " + message.channel.name.pad(13) + "): ").cyan + content);
       lastChannel = message.channel;
    }
 };
