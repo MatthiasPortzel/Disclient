@@ -118,7 +118,7 @@ var say = function (txt) {
          }else {
             console.log("Invalid number.");
          }
-         return;
+         sendMessage = false;
       }
    }
    if (sendMessage) {
