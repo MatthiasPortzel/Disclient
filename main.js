@@ -45,7 +45,8 @@ var getChannel = function (channelName, perm) {
    var channels = server.channels.array();
    var matches = [];
    for (var i = 0; i < channels.length; i++) {
-      if (channels[i].permissionsFor(member).hasPermission(perm) && channels[i].type !== "voice" && channels[i].name.search(new RegExp(channelName))) {
+      if (channels[i].permissionsFor(member).hasPermission(perm) && channels[i].type !== "voice"
+         && channels[i].name.search(new RegExp(channelName)) > -1) {
          matches.push(channels[i]);
       }
    }
