@@ -80,7 +80,7 @@ var say = function (txt) {
             console.log("Sending message in " + ("#" + channelName).cyan);
          }
       }
-      if (txt.startsWith("/leave")) {
+      if (txt.toLowerCase().startsWith("/leave") || text.startsWith("/l")) {
          console.log("You've left " + server.name);
          server = null;
          member = null;
@@ -88,13 +88,13 @@ var say = function (txt) {
          chooseServer();
          return;
       }
-      if (txt.toLowerCase().startsWith("/exit")) {
+      if (txt.toLowerCase().startsWith("/exit") || txt.startsWith("/e")) {
          console.log("Thanks for using Disclient!");
          rl.close();
          Client.destroy();
          return;
       }
-      if (txt.startsWith("/channels")) {
+      if (txt.toLowerCase().startsWith("/channels") || txt.startsWith("/c")) {
          var channels = getChannel(".*");
 
          for (var i = 0; i < channels.length; i++) {
@@ -103,7 +103,7 @@ var say = function (txt) {
          sendMessage = false;
       }
       ///getMessages <number> [channel]
-      if (txt.startsWith("/getMessages")) {
+      if (txt.toLowerCase().startsWith("/getmessages") || txt.startsWith("/gm")) {
          var args = txt.split(" ");
          var num = parseInt(args[1] || " ", 10);
          if (num && num > 0) {
