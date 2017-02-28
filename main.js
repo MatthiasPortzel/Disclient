@@ -40,8 +40,14 @@ var say = function (txt) {
       if (txt.startsWith("/#")) {
          channelName = txt.replace(/\/#(\S+).*/, "$1");
          txt = txt.replace(/\/#\S+\s(.*)/, "$1");
-         console.log("Sending message in " + ("#" + channelName).cyan);
+
          channel = server.channels.find("name", channelName.toLowerCase());
+         if (!channel || !channel.permissionsFor(server.members.get(Client.user.id)).hasPermission('SEND_MESSAGES')) {
+            console.log("Invalid chennel");
+            sendMessage = false;
+         }else {
+            console.log("Sending message in " + ("#" + channelName).cyan);
+         }
       }
       if (txt.startsWith("/leave")) {
          console.log("You've left " + server.name);
