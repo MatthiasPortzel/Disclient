@@ -34,7 +34,6 @@ var getChannel = function (channelName, perm) {
    }else {
       perm = "READ_MESSAGES";
    }
-   channelName = channelName.toLowerCase();
    if (!channelName){
       if (lastChannel) {
          return lastChannel;
@@ -42,6 +41,7 @@ var getChannel = function (channelName, perm) {
          return server.defaultChannel;
       }
    }
+   channelName = channelName.toLowerCase();
    var channels = server.channels.array();
    var matches = [];
    for (var i = 0; i < channels.length; i++) {
