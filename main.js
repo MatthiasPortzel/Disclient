@@ -21,7 +21,7 @@ var displayMessage = function (message) {
       var content = message.content;
       content = content.replace(/<@&(\d{18})>/g, (m, id) => ("@" + message.mentions.roles.get(id).name).magenta);
       content = content.replace (/<#(\d{18})>/g, (m, id) => ("#" + message.mentions.channels.get(id).name).cyan);
-      content = content.replace(/<@!?(\d{18,17})>/g, (m, id) => ("@" + message.mentions.users.get(id).username).green);
+      content = content.replace(/<@!?(\d{17,18})>/g, (m, id) => ("@" + message.mentions.users.get(id).username).green);
       content = content.replace(/([^\\]|^)\*\*(\S+?)([^\\])\*\*/g, (m, m1, m2, m3) => m1 + (m2 + m3).bold);
       console.log(message.author.username.pad(15).green + (" (# " + message.channel.name.pad(13) + "): ").cyan + content);
       lastChannel = message.channel;
@@ -110,10 +110,11 @@ var say = function (txt) {
             var chan = getChannel(args[2]);
             if (chan instanceof Discord.Channel) {
                chan.fetchMessages({limit: num}).then(messages => {
+                  messages = messages.array();
                   for (var i = messages.length -1; i >= 0; i--) {
                      displayMessage(messages[i]);
                   }
-               });
+               }).catch(e => console.log("Could not get messages.\n" + e));
             }else {
                console.log("Error, not a valid channel name.");
             }
