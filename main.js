@@ -156,6 +156,8 @@ var chooseServer = function () {
 };
 
 var login = function (token) {
+   //Optionally remove quotes around the token.
+   token = token.replace(/^["']?(.*?)["']?$/, "$1");
    console.log("Logging in...");
    Client.login(token).then(() => {
       chooseServer();
