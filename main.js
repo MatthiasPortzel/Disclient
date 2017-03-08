@@ -59,6 +59,13 @@ var getChannel = function (channelName, perm) {
    }
 };
 
+var close = function () {
+   console.log("Thanks for using Disclient!");
+   rl.close();
+   Client.destroy();
+   process.exit();
+};
+
 var say = function (txt) {
    if (!server)
       return;
@@ -89,9 +96,7 @@ var say = function (txt) {
          return;
       }
       if (txt.toLowerCase().startsWith("/exit") || txt.startsWith("/e")) {
-         console.log("Thanks for using Disclient!");
-         rl.close();
-         Client.destroy();
+         close();
          return;
       }
       if (txt.toLowerCase().startsWith("/channels") || txt.startsWith("/c")) {
@@ -163,8 +168,14 @@ var login = function (token) {
       chooseServer();
 
       Client.on("message", displayMessage);
+   }).catch(e => {
+      console.log("Failed to login.\n" + e);
+      close();
    });
 };
+
+process.on("SIGINT", close);
+rl.on('SIGINT', close);
 
 try {
    login(require('./token.json'));
