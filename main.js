@@ -110,7 +110,7 @@ var say = function (txt) {
       ///getMessages <number> [channel]
       if (txt.toLowerCase().startsWith("/getmessages") || txt.startsWith("/gm")) {
          var args = txt.split(" ");
-         var num = parseInt(args[1] || " ", 10);
+         var num = parseInt(args[1] || "10", 10);
          if (num && num > 0) {
             var chan = getChannel(args[2]);
             if (chan instanceof Discord.Channel) {
@@ -146,7 +146,7 @@ var chooseServer = function () {
 
    rl.question('Server Number? ', (answer) => {
       serverNum = parseInt(answer, 10)-1;
-      if (Number.isNaN(serverNum) || serverNum < 0 || serverNum > guilds.length) {
+      if (Number.isNaN(serverNum) || serverNum <= 0 || serverNum > guilds.length) {
         console.log("That's not a valid server number");
         chooseServer();
         return;
